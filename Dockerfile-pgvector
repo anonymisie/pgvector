@@ -1,0 +1,25 @@
+FROM postgres:14.5
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       build-essential \
+       git \
+       clang \
+       llvm-11 \
+       ca-certificates \
+       postgresql-server-dev-14 \
+    && git clone --depth 1 https://github.com/pgvector/pgvector.git /usr/src/pgvector \
+    && cd /usr/src/pgvector \
+    && make \
+    && make install
+
+RUN apt-get purge -y \
+       build-essential \
+       git \
+       clang \
+       llvm-11 \
+       postgresql-server-dev-14 \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/* /usr/src/pgvector
+
+COPY init-vector.sql /docker-entrypoint-initdb.d/
