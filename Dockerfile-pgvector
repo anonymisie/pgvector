@@ -1,4 +1,5 @@
-FROM postgres:14.5
+# Stage 1: Build pgvector
+FROM postgres:14.5 AS builder
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -13,13 +14,12 @@ RUN apt-get update \
     && make \
     && make install
 
-RUN apt-get purge -y \
-       build-essential \
-       git \
-       clang \
-       llvm-11 \
-       postgresql-server-dev-14 \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/* /usr/src/pgvector
+# Stage 2: Final runtime image
+FROM postgres:14.5
 
+# Copy compiled pgvector extension from builder
+COPY --from=builder /usr/lib/postgresql/14/lib/vector.so /usr/lib/postgresql/14/lib/
+COPY --from=builder /usr/share/postgresql/14/extension/vector* /usr/share/postgresql/14/extension/
+
+# Optional: initialize pgvector in default DB
 COPY init-vector.sql /docker-entrypoint-initdb.d/

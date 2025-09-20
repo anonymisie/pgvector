@@ -12,15 +12,21 @@ TAG=$(date +%Y%m%d%H%M%S)
 docker build -f Dockerfile-CUSTOM -t pgvec:$TAG
 
 # run container 
-docker run -dit -e POSTGRES_PASSWORD=1234 --name=pgvec pgvec
+docker run -dit -e POSTGRES_PASSWORD=1234 --name=pgvec pgvec:$TAG
 # alternatively use docker compose file
 docker-compose up -d .
 
 
-
 ## testing pgvector
-docker exec -it pgvec bash
+docker exec -it pgvector bash
 
 psql -h localhost -U postgres -d postgres -c '\dx'
+
+
+## access adminer in browser
+## in adminer use host.containers.internal (podman) or host.docker.internal (docker) as db host
+## !!!!!! be aware of unencrypted http and sensitive info in url
+http://localhost:8088/?pgsql=host.containers.internal&username=admin&db=initdb&ns=public
+
 
 ```
