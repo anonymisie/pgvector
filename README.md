@@ -2,17 +2,16 @@
 #set vars and prepare env file
 mv .env.example .env
 
-#harcoded
-TAG=1.0.0
+# set tag, admin pass and db
 
-#build-date based
-TAG=$(date +%Y%m%d%H%M%S)
+# #NOT WORKING build-date based
+# TAG=$(date +%Y%m%d%H%M%S)
 
 #build image
-docker build -f Dockerfile-CUSTOM -t pgvec:$TAG
+docker build -f Dockerfile-CUSTOM -t pgvector:$TAG
 
 # run container 
-docker run -dit -e POSTGRES_PASSWORD=1234 --name=pgvec pgvec:$TAG
+docker run -dit -e POSTGRES_PASSWORD=1234 --name=pgvector pgvec:$TAG
 # alternatively use docker compose file
 docker-compose up -d .
 

@@ -9,7 +9,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile-pgvector
-    image: "pgvec:${TAG:-latest}"
+    image: "pgvector:${TAG:-latest}"
     ports:
       - "5432:5432"
     environment:
