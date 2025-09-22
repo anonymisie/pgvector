@@ -1,24 +1,24 @@
 ```bash
-#set vars and prepare env file
+# set vars and prepare env file
 mv .env.example .env
 
-# set tag, admin pass and db
+#### set tag, admin pass and db
 
 # #NOT WORKING build-date based
 # TAG=$(date +%Y%m%d%H%M%S)
 
-#build image
+### build image
 docker build -f Dockerfile-CUSTOM -t pgvector:$TAG
-
-# run container 
+### run container 
 docker run -dit -e POSTGRES_PASSWORD=1234 --name=pgvector pgvec:$TAG
-# alternatively use docker compose file
+
+### alternatively to build and run use docker compose file (or no build if image exists)
 docker-compose up -d .
+docker-compose up -d . --no-build 
 
 
 ## testing pgvector
 docker exec -it pgvector bash
-
 psql -h localhost -U postgres -d postgres -c '\dx'
 
 
